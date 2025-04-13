@@ -23,7 +23,7 @@ export const HomePage = () => {
       </div>
 
       {/* Items List */}
-      <div className="flex-grow px-4 pb-4 overflow-y-auto">
+      <div className="flex-grow px-4 pb-28 overflow-y-auto">
         {/* Items List */}
         {[
           { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
@@ -69,11 +69,17 @@ export const HomePage = () => {
           </div>
         </div>
 
-        {/* Pay Button (Floating) */}
-        <div className="fixed bottom-20 left-0 right-0 px-4 z-10">
-          <button className="w-full bg-teal-600 text-white text-center py-3 rounded-full font-semibold text-base shadow-lg">
-            Click to Pay
-          </button>
+        {/* Pay Button (Floating with Grand Total) */}
+        <div className="fixed bottom-16 left-0 right-0 px-4 z-10">
+          <div className="bg-white rounded-xl shadow-lg p-3 flex items-center justify-between border">
+            <div>
+              <div className="text-sm text-gray-500">Grand Total</div>
+              <div className="text-lg font-bold">₹1243</div>
+            </div>
+            <button className="bg-teal-600 text-white px-6 py-2 rounded-full font-semibold text-base">
+              Click to Pay
+            </button>
+          </div>
         </div>
       </div>
 
