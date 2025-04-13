@@ -69,9 +69,9 @@ export const HomePage = () => {
           </div>
         </div>
 
-        {/* Pay Button */}
-        <div className="mt-4">
-          <button className="w-full bg-teal-600 text-white text-center py-3 rounded-full font-semibold text-base">
+        {/* Pay Button (Floating) */}
+        <div className="fixed bottom-20 left-0 right-0 px-4 z-10">
+          <button className="w-full bg-teal-600 text-white text-center py-3 rounded-full font-semibold text-base shadow-lg">
             Click to Pay
           </button>
         </div>
