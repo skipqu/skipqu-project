@@ -1,9 +1,18 @@
 import { ShoppingBasket, Clock, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import logo from '../assets/skipqu-logo.png';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const [items, setItems] = useState([
+    { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
+    { name: 'Nandini Milk 1/2 Ltr', price: 27, oldPrice: 30, discount: '4% Off', quantity: 1 },
+    { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
+    { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
+    { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
+    { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 }
+  ]);
   
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -25,14 +34,7 @@ export const HomePage = () => {
       {/* Items List */}
       <div className="flex-grow px-4 pb-28 overflow-y-auto">
         {/* Items List */}
-        {[
-          { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
-          { name: 'Nandini Milk 1/2 Ltr', price: 27, oldPrice: 30, discount: '4% Off', quantity: 1 },
-          { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
-          { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
-          { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
-          { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 }
-        ].map((item, index) => (
+        {items.map((item, index) => (
           <div key={index} className="border-b py-3">
             <div className="flex justify-between items-start">
               <div>
@@ -44,9 +46,31 @@ export const HomePage = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between bg-yellow-50 border-2 border-yellow-400 rounded-full px-4 py-1 w-24">
-                <button className="text-yellow-600 text-lg font-bold">-</button>
+                <button
+                  className="text-yellow-600 text-lg font-bold"
+                  onClick={() => {
+                    setItems(prev =>
+                      prev.map((it, i) =>
+                        i === index && it.quantity > 0 ? { ...it, quantity: it.quantity - 1 } : it
+                      )
+                    );
+                  }}
+                >
+                  -
+                </button>
                 <span className="font-bold text-base text-black">{item.quantity}</span>
-                <button className="text-yellow-600 text-lg font-bold">+</button>
+                <button
+                  className="text-yellow-600 text-lg font-bold"
+                  onClick={() => {
+                    setItems(prev =>
+                      prev.map((it, i) =>
+                        i === index ? { ...it, quantity: it.quantity + 1 } : it
+                      )
+                    );
+                  }}
+                >
+                  +
+                </button>
               </div>
             </div>
             <div className="text-right font-bold text-sm mt-1">₹{item.price * item.quantity}</div>
