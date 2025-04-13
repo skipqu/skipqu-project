@@ -54,9 +54,11 @@ export const HomePage = () => {
                   className="text-yellow-600 text-lg font-bold"
                   onClick={() => {
                     setItems(prev =>
-                      prev.map((it, i) =>
-                        i === index && it.quantity > 0 ? { ...it, quantity: it.quantity - 1 } : it
-                      )
+                      prev
+                        .map((it, i) =>
+                          i === index ? { ...it, quantity: it.quantity - 1 } : it
+                        )
+                        .filter(it => it.quantity > 0)
                     );
                   }}
                 >
