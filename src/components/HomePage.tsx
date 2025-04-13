@@ -35,19 +35,21 @@ export const HomePage = () => {
         ].map((item, index) => (
           <div key={index} className="border-b py-3">
             <div className="flex justify-between items-start">
-              <div className="font-semibold text-sm">{item.name}</div>
+              <div>
+                <div className="font-semibold text-sm">{item.name}</div>
+                <div className="text-sm mt-1">
+                  <span className="text-black font-bold">₹{item.price}</span>
+                  <span className="line-through text-gray-400 ml-2">₹{item.oldPrice}</span>
+                  <span className="text-green-600 ml-2 font-semibold">{item.discount}</span>
+                </div>
+              </div>
               <div className="flex items-center justify-between bg-yellow-50 border-2 border-yellow-400 rounded-full px-4 py-1 w-24">
                 <button className="text-yellow-600 text-lg font-bold">-</button>
-                <span className="font-bold text-base text-black">2</span>
+                <span className="font-bold text-base text-black">{item.quantity}</span>
                 <button className="text-yellow-600 text-lg font-bold">+</button>
               </div>
             </div>
-            <div className="text-sm mt-1">
-              <span className="text-black font-bold">₹{item.price}</span>
-              <span className="line-through text-gray-400 ml-2">₹{item.oldPrice}</span>
-              <span className="text-green-600 ml-2 font-semibold">{item.discount}</span>
-              <span className="font-bold text-sm float-right">₹{item.price * item.quantity}</span>
-            </div>
+            <div className="text-right font-bold text-sm mt-1">₹{item.price * item.quantity}</div>
           </div>
         ))}
 
