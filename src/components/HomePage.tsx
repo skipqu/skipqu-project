@@ -13,7 +13,9 @@ export const HomePage = () => {
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 }
   ]);
-  
+
+  const totalAmount = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
@@ -82,7 +84,7 @@ export const HomePage = () => {
           <h2 className="font-semibold mb-2">Bill Summary</h2>
           <div className="flex justify-between text-sm py-1">
             <span className="flex items-center gap-1"><ShoppingCart size={16} /> Item total</span>
-            <span>₹1243</span>
+            <span>₹{totalAmount}</span>
           </div>
           <div className="flex justify-between text-sm py-1">
             <span className="flex items-center gap-1"><Clock size={16} /> Platform Fee</span>
@@ -90,7 +92,7 @@ export const HomePage = () => {
           </div>
           <div className="flex justify-between mt-2 font-bold text-base">
             <span>Grand Total</span>
-            <span>₹1243</span>
+            <span>₹{totalAmount}</span>
           </div>
         </div>
 
@@ -99,7 +101,7 @@ export const HomePage = () => {
           <div className="bg-white rounded-xl shadow-lg p-3 flex items-center justify-between border">
             <div>
               <div className="text-sm text-gray-500">Grand Total</div>
-              <div className="text-lg font-bold">₹1243</div>
+              <div className="text-lg font-bold">₹{totalAmount}</div>
             </div>
             <button className="bg-teal-600 text-white px-6 py-2 rounded-full font-semibold text-base">
               Click to Pay
