@@ -97,7 +97,7 @@ export const HomePage = () => {
         </div>
 
         {/* Pay Button (Floating with Grand Total) */}
-        <div className="fixed bottom-16 left-0 right-0 px-4 z-10">
+        <div className="fixed bottom-16 left-0 right-0 px-4 z-0">
           <div className="bg-white rounded-xl shadow-lg p-3 flex items-center justify-between border">
             <div>
               <div className="text-sm text-gray-500">Grand Total</div>
@@ -121,7 +121,7 @@ export const HomePage = () => {
         </button>
         <button
           onClick={() => navigate('/scan')}
-          className="bg-white p-2 rounded-full -mt-6 shadow-md"
+          className="bg-white p-2 rounded-full -mt-6 shadow-md z-20"
         >
           <div className="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center border border-teal-300">
             <ShoppingBasket size={24} className="text-teal-500" />
