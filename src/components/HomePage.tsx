@@ -1,20 +1,18 @@
 import { ShoppingBasket, Clock, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import logo from '../assets/skipqu-logo.png';
 
 export const HomePage = () => {
   const navigate = useNavigate();
-
-  const items = [
+  const [items, setItems] = useState([
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
     { name: 'Nandini Milk 1/2 Ltr', price: 27, oldPrice: 30, discount: '4% Off', quantity: 1 },
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 },
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 }
-  ];
-
-  const grandTotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  ]);
   
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -48,9 +46,31 @@ export const HomePage = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between bg-yellow-50 border-2 border-yellow-400 rounded-full px-4 py-1 w-24">
-                <button className="text-yellow-600 text-lg font-bold">-</button>
+                <button
+                  className="text-yellow-600 text-lg font-bold"
+                  onClick={() => {
+                    setItems(prev =>
+                      prev.map((it, i) =>
+                        i === index && it.quantity > 0 ? { ...it, quantity: it.quantity - 1 } : it
+                      )
+                    );
+                  }}
+                >
+                  -
+                </button>
                 <span className="font-bold text-base text-black">{item.quantity}</span>
-                <button className="text-yellow-600 text-lg font-bold">+</button>
+                <button
+                  className="text-yellow-600 text-lg font-bold"
+                  onClick={() => {
+                    setItems(prev =>
+                      prev.map((it, i) =>
+                        i === index ? { ...it, quantity: it.quantity + 1 } : it
+                      )
+                    );
+                  }}
+                >
+                  +
+                </button>
               </div>
             </div>
             <div className="text-right font-bold text-sm mt-1">₹{item.price * item.quantity}</div>
@@ -62,7 +82,7 @@ export const HomePage = () => {
           <h2 className="font-semibold mb-2">Bill Summary</h2>
           <div className="flex justify-between text-sm py-1">
             <span className="flex items-center gap-1"><ShoppingCart size={16} /> Item total</span>
-            <span>₹{grandTotal}</span>
+            <span>₹1243</span>
           </div>
           <div className="flex justify-between text-sm py-1">
             <span className="flex items-center gap-1"><Clock size={16} /> Platform Fee</span>
@@ -70,7 +90,7 @@ export const HomePage = () => {
           </div>
           <div className="flex justify-between mt-2 font-bold text-base">
             <span>Grand Total</span>
-            <span>₹{grandTotal}</span>
+            <span>₹1243</span>
           </div>
         </div>
 
@@ -79,7 +99,7 @@ export const HomePage = () => {
           <div className="bg-white rounded-xl shadow-lg p-3 flex items-center justify-between border">
             <div>
               <div className="text-sm text-gray-500">Grand Total</div>
-              <div className="text-lg font-bold">₹{grandTotal}</div>
+              <div className="text-lg font-bold">₹1243</div>
             </div>
             <button className="bg-teal-600 text-white px-6 py-2 rounded-full font-semibold text-base">
               Click to Pay
