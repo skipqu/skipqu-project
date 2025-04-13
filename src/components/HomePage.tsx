@@ -14,7 +14,9 @@ export const HomePage = () => {
     { name: 'Diary Milk Chocolate 50gm', price: 60, oldPrice: 82, discount: '10% Off', quantity: 2 }
   ]);
 
-  const totalAmount = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const itemTotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const platformFee = 5;
+  const totalAmount = itemTotal + platformFee;
 
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -84,11 +86,11 @@ export const HomePage = () => {
           <h2 className="font-semibold mb-2">Bill Summary</h2>
           <div className="flex justify-between text-sm py-1">
             <span className="flex items-center gap-1"><ShoppingCart size={16} /> Item total</span>
-            <span>₹{totalAmount}</span>
+            <span>₹{itemTotal}</span>
           </div>
           <div className="flex justify-between text-sm py-1">
             <span className="flex items-center gap-1"><Clock size={16} /> Platform Fee</span>
-            <span>₹0</span>
+            <span>₹5</span>
           </div>
           <div className="flex justify-between mt-2 font-bold text-base">
             <span>Grand Total</span>
