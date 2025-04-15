@@ -1,4 +1,4 @@
-const admin = require('firebase-admin');
+const { createUserWithRole } = require('../services/authService');
 const USER_TYPES = require('../constants/userTypes');
 
 const registerUser = async (req, res) => {
@@ -13,21 +13,10 @@ const registerUser = async (req, res) => {
   }
 
   try {
-    const userRecord = await admin.auth().createUser({
-      email,
-      password,
-    });
-
-    await admin.auth().setCustomUserClaims(userRecord.uid, { userType });
-
-    res.status(201).json({
-      message: 'User registered successfully',
-      uid: userRecord.uid,
-      email: userRecord.email,
-      userType,
-    });
+    const result = await createUserWithRole(email, password, userType);
+    res.status(201).json(result);
   } catch (error) {
-    console.error('Error creating user:', error);
+    console.error('Registration failed:', error);
     res.status(500).json({ message: 'Error creating user', error: error.message });
   }
 };
