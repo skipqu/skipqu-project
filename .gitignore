@@ -137,3 +137,5 @@ dist
 
 .DS_Store
 package-lock.json
+
+skip-qu-firebase-adminsdk-fbsvc-23800b86b4.json
