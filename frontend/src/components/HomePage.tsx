@@ -3,6 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import logo from '../assets/skipqu-logo.png';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('Service Worker registration failed: ', registrationError);
+      });
+  });
+}
+
 export const HomePage = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([
