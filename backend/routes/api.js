@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authenticate = require('../firebase/config/middlewares/auth');
 const admin = require('firebase-admin');
+const USER_TYPES = require('../constants/userTypes');
 
 router.get('/', (req, res) => {
   res.json({ message: 'Welcome to the public API!' });
@@ -14,8 +15,7 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'Email, password, and userType are required.' });
   }
 
-  const validUserTypes = ['BUYER', 'ADMIN', 'SUPERVISOR', 'SECURITY'];
-  if (!validUserTypes.includes(userType)) {
+  if (!Object.values(USER_TYPES).includes(userType)) {
     return res.status(400).json({ message: 'Invalid userType provided.' });
   }
 
