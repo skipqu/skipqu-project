@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BarcodeFormat, BrowserMultiFormatReader, Result } from '@zxing/library';
 import { useCartStore } from '../store/cartStore';
 import { Flashlight, X, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Search, Mic } from 'lucide-react';
+import skipquLogo from '../assets/skipqu-logo.png';
 
 // Mock product database - in a real app, this would come from your backend
 const MOCK_PRODUCTS = {
@@ -118,6 +120,14 @@ export const ScannerPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-black relative"
     >
+      {/* Header */}
+      <div className="absolute top-0 inset-x-0 flex items-center p-4 z-20">
+        <button onClick={() => window.history.back()} className="p-2">
+          <ArrowLeft className="w-6 h-6 text-white" />
+        </button>
+        <h2 className="text-white text-lg font-medium ml-2">SkipQu Scan and Go</h2>
+      </div>
+
       <div className="relative h-screen">
         <video
           ref={videoRef}
@@ -127,7 +137,7 @@ export const ScannerPage = () => {
         {/* Scanner UI Elements */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Corner Markers */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 mb-[35%]">
             {/* Top Left */}
             <motion.div
               animate={{
@@ -135,7 +145,7 @@ export const ScannerPage = () => {
                 scale: scanning ? [1, 1.05, 1] : 1,
               }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute top-0 left-0 w-12 h-12 border-l-4 border-t-4 border-blue-500"
+              className="absolute top-0 left-0 w-12 h-12 border-l-4 border-t-4 border-[#F59E0B]"
             />
             {/* Top Right */}
             <motion.div
@@ -144,7 +154,7 @@ export const ScannerPage = () => {
                 scale: scanning ? [1, 1.05, 1] : 1,
               }}
               transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-              className="absolute top-0 right-0 w-12 h-12 border-r-4 border-t-4 border-blue-500"
+              className="absolute top-0 right-0 w-12 h-12 border-r-4 border-t-4 border-[#F59E0B]"
             />
             {/* Bottom Left */}
             <motion.div
@@ -153,7 +163,7 @@ export const ScannerPage = () => {
                 scale: scanning ? [1, 1.05, 1] : 1,
               }}
               transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-              className="absolute bottom-0 left-0 w-12 h-12 border-l-4 border-b-4 border-blue-500"
+              className="absolute bottom-0 left-0 w-12 h-12 border-l-4 border-b-4 border-[#F59E0B]"
             />
             {/* Bottom Right */}
             <motion.div
@@ -162,28 +172,46 @@ export const ScannerPage = () => {
                 scale: scanning ? [1, 1.05, 1] : 1,
               }}
               transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
-              className="absolute bottom-0 right-0 w-12 h-12 border-r-4 border-b-4 border-blue-500"
+              className="absolute bottom-0 right-0 w-12 h-12 border-r-4 border-b-4 border-[#F59E0B]"
             />
+            {/* <motion.div
+              initial={{ y: -150 }}
+              animate={{
+                y: scanning ? 150 : -150,
+                opacity: scanning ? [0.5, 1, 0.5] : 0
+              }}
+              transition={{
+                y: { duration: 2, repeat: Infinity, ease: "linear" },
+                opacity: { duration: 1, repeat: Infinity }
+              }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-0.5 bg-blue-500 shadow-lg"
+              style={{ boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)' }}
+            /> */}
           </div>
+        </div>
 
-          {/* Scanning Line */}
-          <motion.div
-            initial={{ y: -150 }}
-            animate={{ 
-              y: scanning ? 150 : -150,
-              opacity: scanning ? [0.5, 1, 0.5] : 0
-            }}
-            transition={{
-              y: { duration: 2, repeat: Infinity, ease: "linear" },
-              opacity: { duration: 1, repeat: Infinity }
-            }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 w-64 h-0.5 bg-blue-500 shadow-lg"
-            style={{ boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)' }}
-          />
+        {/* Static bottom sheet */}
+        <div className="absolute bottom-0 inset-x-0 h-[35%] bg-white rounded-t-3xl p-6 z-10">
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4" />
+          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-6">
+            <Search className="w-5 h-5 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Enter barcode number"
+              className="flex-1 bg-transparent outline-none ml-2"
+            />
+            <Mic className="w-5 h-5 text-gray-500" />
+          </div>
+          <div className="flex justify-center mb-4">
+            <img src={skipquLogo} alt="SkipQu" className="h-10" />
+          </div>
+          <p className="text-center text-gray-600 text-sm">
+            Scan and Go - Scan the Barcode from the product or enter the barcode number to add that item to your cart.
+          </p>
         </div>
 
         {/* Controls */}
-        <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black to-transparent">
+        <div className="absolute bottom-56 inset-x-0 p-6 bg-gradient-to-t from-black to-transparent">
           <div className="flex justify-between items-center max-w-md mx-auto">
             <button
               onClick={toggleFlashlight}
