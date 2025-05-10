@@ -162,18 +162,6 @@ export const ScannerPage = () => {
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
         <h2 className="text-white text-lg font-medium ml-2">SkipQu Scan and Go</h2>
-        {lastScanned && (
-          <button
-            onClick={() => {
-              setShowOverlay(false);
-              setScanning(true);
-              setLastScanned(null);
-            }}
-            className="text-blue-600"
-          >
-            Scan Again
-          </button>
-        )}
       </div>
 
       <div className="relative h-screen">
@@ -289,6 +277,18 @@ export const ScannerPage = () => {
               className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl overflow-hidden z-20"
             >
               <div className="p-6">
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => {
+                      setShowOverlay(false);
+                      setScanning(true);
+                      setLastScanned(null);
+                    }}
+                    className="text-blue-600 text-sm"
+                  >
+                    Scan Again
+                  </button>
+                </div>
                 <h3 className="text-lg font-semibold mb-2">Item Detected</h3>
                 <div className="flex items-start space-x-4">
                   {/* <motion.img
