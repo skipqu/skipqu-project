@@ -157,11 +157,11 @@ export const ScannerPage = () => {
       className="min-h-screen bg-black relative"
     >
       {/* Header */}
-      <div className="absolute top-0 inset-x-0 flex items-center justify-between p-4 z-20">
+      <div className="absolute top-0 inset-x-0 flex items-center justify-start p-4 z-20 space-x-4">
         <button onClick={() => window.history.back()} className="p-2">
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
-        <h2 className="text-white text-lg font-medium ml-2">SkipQu Scan and Go</h2>
+        <h2 className="text-white text-lg font-medium">SkipQu Scan and Go</h2>
       </div>
 
       <div className="relative h-screen">
@@ -253,19 +253,6 @@ export const ScannerPage = () => {
           </div>
         )}
 
-        {/* <div className="absolute bottom-56 inset-x-0 p-6 bg-gradient-to-t from-black to-transparent">
-          <div className="flex justify-between items-center max-w-md mx-auto">
-            <button
-              onClick={toggleFlashlight}
-              className={`p-4 rounded-full ${
-                flashlightOn ? 'bg-blue-600' : 'bg-gray-800'
-              } transition-colors duration-300`}
-            >
-              <Flashlight className="w-6 h-6 text-white" />
-            </button>
-          </div>
-        </div> */}
-
         {/* Scanned Item Overlay */}
         <AnimatePresence>
           {showOverlay && lastScanned && (
@@ -277,28 +264,8 @@ export const ScannerPage = () => {
               className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl overflow-hidden z-20"
             >
               <div className="p-6">
-                <div className="flex justify-end">
-                  <button
-                    onClick={() => {
-                      setShowOverlay(false);
-                      setScanning(true);
-                      setLastScanned(null);
-                    }}
-                    className="text-blue-600 text-sm"
-                  >
-                    Scan Again
-                  </button>
-                </div>
                 <h3 className="text-lg font-semibold mb-2">Item Detected</h3>
                 <div className="flex items-start space-x-4">
-                  {/* <motion.img
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    src={lastScanned.image}
-                    alt={lastScanned.name}
-                    className="w-24 h-24 rounded-xl object-cover"
-                  /> */}
                   <div className="flex-1">
                     <motion.div
                       initial={{ x: 20, opacity: 0 }}
