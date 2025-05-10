@@ -13,6 +13,7 @@ const MOCK_PRODUCTS = {
       id: '9318637043316', 
       name: 'Cetaphil', 
       price: 150.3, 
+      offer: 10,
       description: 'Moisturizing lotion for all skin types',
       weight: '400ml'
     }
@@ -21,7 +22,8 @@ const MOCK_PRODUCTS = {
     {
       id: '9318637043316', 
       name: 'Himalaya Gentle baby wipes', 
-      price: 280, 
+      price: 280,
+      offer: 10, 
       description: 'Gentle baby wipes for sensitive skin',
       weight: '72 wipes'
     }
@@ -155,11 +157,23 @@ export const ScannerPage = () => {
       className="min-h-screen bg-black relative"
     >
       {/* Header */}
-      <div className="absolute top-0 inset-x-0 flex items-center p-4 z-20">
+      <div className="absolute top-0 inset-x-0 flex items-center justify-between p-4 z-20">
         <button onClick={() => window.history.back()} className="p-2">
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
         <h2 className="text-white text-lg font-medium ml-2">SkipQu Scan and Go</h2>
+        {lastScanned && (
+          <button
+            onClick={() => {
+              setShowOverlay(false);
+              setScanning(true);
+              setLastScanned(null);
+            }}
+            className="text-blue-600"
+          >
+            Scan Again
+          </button>
+        )}
       </div>
 
       <div className="relative h-screen">
@@ -275,15 +289,16 @@ export const ScannerPage = () => {
               className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl overflow-hidden z-20"
             >
               <div className="p-6">
+                <h3 className="text-lg font-semibold mb-2">Item Detected</h3>
                 <div className="flex items-start space-x-4">
-                  <motion.img
+                  {/* <motion.img
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.2 }}
                     src={lastScanned.image}
                     alt={lastScanned.name}
                     className="w-24 h-24 rounded-xl object-cover"
-                  />
+                  /> */}
                   <div className="flex-1">
                     <motion.div
                       initial={{ x: 20, opacity: 0 }}
@@ -291,7 +306,16 @@ export const ScannerPage = () => {
                       transition={{ delay: 0.3 }}
                     >
                       <h3 className="text-xl font-semibold text-gray-800">{lastScanned.name}</h3>
-                      <p className="text-blue-600 text-lg font-medium">₹{lastScanned.price.toFixed(2)}</p>
+                      <p className="text-gray-600 text-sm">Barcode: {lastScanned.id}</p>
+                      <div className="flex items-center space-x-2">
+                        <p className="text-blue-600 text-lg font-medium">
+                          ₹{(lastScanned.price * (1 - lastScanned.offer / 100)).toFixed(2)}
+                        </p>
+                        <p className="text-gray-500 text-sm line-through">
+                          ₹{lastScanned.price.toFixed(2)}
+                        </p>
+                        <p className="text-green-600 text-sm">{lastScanned.offer}% Off</p>
+                      </div>
                       <p className="text-gray-600 text-sm mt-1">{lastScanned.description}</p>
                       {lastScanned.weight && (
                         <p className="text-gray-500 text-sm">{lastScanned.weight}</p>
@@ -303,29 +327,17 @@ export const ScannerPage = () => {
                   </div>
                 </div>
                 
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="mt-4 flex items-center justify-between"
+                <button
+                  onClick={() => {
+                    addItem(lastScanned);
+                    setShowOverlay(false);
+                    setScanning(true);
+                    setLastScanned(null);
+                  }}
+                  className="w-full bg-teal-500 text-white py-3 rounded-full text-center font-medium mt-4"
                 >
-                  <div className="bg-green-100 px-4 py-2 rounded-full">
-                    <p className="text-green-700 font-medium">Added to cart</p>
-                  </div>
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ 
-                      type: "spring",
-                      delay: 0.5,
-                      duration: 0.5
-                    }}
-                    className="flex items-center space-x-2 text-blue-600"
-                  >
-                    <ShoppingCart size={20} />
-                    <span className="font-medium">In Cart</span>
-                  </motion.div>
-                </motion.div>
+                  Add to Cart
+                </button>
               </div>
             </motion.div>
           )}
