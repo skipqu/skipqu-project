@@ -130,25 +130,6 @@ export const ScannerPage = () => {
     };
   }, [addItem]);
 
-  // const toggleFlashlight = async () => {
-  //   try {
-  //     const stream = videoRef.current?.srcObject as MediaStream;
-  //     if (stream) {
-  //       const track = stream.getVideoTracks()[0];
-  //       const capabilities = track.getCapabilities();
-        
-  //       if (capabilities.torch) {
-  //         await track.applyConstraints({
-  //           advanced: [{ torch: !flashlightOn }],
-  //         });
-  //         setFlashlightOn(!flashlightOn);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.error('Failed to toggle flashlight:', err);
-  //   }
-  // };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -210,19 +191,6 @@ export const ScannerPage = () => {
               transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
               className="absolute bottom-0 right-0 w-12 h-12 border-r-4 border-b-4 border-[#F59E0B]"
             />
-            {/* <motion.div
-              initial={{ y: -150 }}
-              animate={{
-                y: scanning ? 150 : -150,
-                opacity: scanning ? [0.5, 1, 0.5] : 0
-              }}
-              transition={{
-                y: { duration: 2, repeat: Infinity, ease: "linear" },
-                opacity: { duration: 1, repeat: Infinity }
-              }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-0.5 bg-blue-500 shadow-lg"
-              style={{ boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)' }}
-            /> */}
           </div>
         </div>
 
