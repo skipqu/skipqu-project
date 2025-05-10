@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarcodeFormat, BrowserMultiFormatReader, Result } from '@zxing/library';
+import { BarcodeFormat, BrowserMultiFormatReader, DecodeHintType, Result } from '@zxing/library';
 import { useCartStore } from '../store/cartStore';
 import { Flashlight, X, ShoppingCart } from 'lucide-react';
 import { ArrowLeft, Search, Mic } from 'lucide-react';
@@ -8,74 +8,108 @@ import skipquLogo from '../assets/skipqu-logo.png';
 
 // Mock product database - in a real app, this would come from your backend
 const MOCK_PRODUCTS = {
-  '123456789': { 
-    id: '123456789', 
-    name: 'Organic Bananas', 
-    price: 2.99, 
-    image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&auto=format&fit=crop',
-    description: 'Fresh organic bananas from Ecuador',
-    weight: '1 bunch (approx. 6-7 bananas)'
-  },
-  '987654321': { 
-    id: '987654321', 
-    name: 'Whole Milk', 
-    price: 3.49, 
-    image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&auto=format&fit=crop',
-    description: 'Fresh whole milk, vitamin D fortified',
-    volume: '1 gallon'
-  },
-  '456789123': { 
-    id: '456789123', 
-    name: 'Wheat Bread', 
-    price: 4.99, 
-    image: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=800&auto=format&fit=crop',
-    description: 'Freshly baked whole wheat bread',
-    weight: '1 loaf (24 oz)'
-  },
+  '9318637043316': [
+    {
+      id: '9318637043316', 
+      name: 'Cetaphil', 
+      price: 150.3, 
+      description: 'Moisturizing lotion for all skin types',
+      weight: '400ml'
+    }
+  ],
+  '8901138513184' : [
+    {
+      id: '9318637043316', 
+      name: 'Himalaya Gentle baby wipes', 
+      price: 280, 
+      description: 'Gentle baby wipes for sensitive skin',
+      weight: '72 wipes'
+    }
+  ]
 };
 
 export const ScannerPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [flashlightOn, setFlashlightOn] = useState(false);
+  // const [flashlightOn, setFlashlightOn] = useState(false);
   const [scanning, setScanning] = useState(true);
   const [lastScanned, setLastScanned] = useState<any>(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
 
+  const [manualCode, setManualCode] = useState('');
+  const handleManualScan = () => {
+    const code = manualCode.trim();
+    if (!code) return;
+    const product = MOCK_PRODUCTS[code];
+    if (product && scanning) {
+      setScanning(false);
+      setLastScanned(product[0]);
+      setShowOverlay(true);
+      addItem(product[0]);
+      setTimeout(() => {
+        setScanning(true);
+        setShowOverlay(false);
+        setLastScanned(null);
+      }, 3000);
+    } else if (!product) {
+      alert('Product not found');
+    }
+    setManualCode('');
+  };
+
   useEffect(() => {
-    const codeReader = new BrowserMultiFormatReader();
+    // Configure ZXing to only try common 1D barcode formats and scan every 500ms
+    const hints = new Map();
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+      BarcodeFormat.EAN_13,
+      BarcodeFormat.CODE_128,
+      BarcodeFormat.UPC_A,
+      BarcodeFormat.UPC_E,
+      BarcodeFormat.EAN_8,
+      BarcodeFormat.CODE_39
+    ]);
+    const codeReader = new BrowserMultiFormatReader(hints, 500);
     let mounted = true;
 
     const startScanner = async () => {
       try {
         const videoInputDevices = await codeReader.listVideoInputDevices();
-        const selectedDeviceId = videoInputDevices[0].deviceId;
+        // Choose the back-facing camera if available
+        const back = videoInputDevices.find(device =>
+          device.label.toLowerCase().includes('back')
+        ) || videoInputDevices[0];
+        const selectedDeviceId = back.deviceId;
         
         if (mounted && videoRef.current) {
           await codeReader.decodeFromVideoDevice(
             selectedDeviceId,
             videoRef.current,
             (result: Result | null, error: Error | undefined) => {
+              console.log(result);
               if (result && mounted) {
                 const scannedCode = result.getText();
                 const product = MOCK_PRODUCTS[scannedCode];
                 
                 if (product && scanning) {
-                  setScanning(false);
-                  setLastScanned(product);
-                  setShowOverlay(true);
-                  addItem(product);
                   
-                  // Resume scanning after 3 seconds
-                  setTimeout(() => {
-                    if (mounted) {
-                      setScanning(true);
-                      setShowOverlay(false);
-                      setTimeout(() => {
-                        if (mounted) setLastScanned(null);
-                      }, 300);
-                    }
-                  }, 3000);
+                  if (product.length == 1) {
+                    setScanning(false);
+                    setLastScanned(product[0]);
+                    setShowOverlay(true);
+                    addItem(product[0]);
+                    // Resume scanning after 3 seconds
+                    setTimeout(() => {
+                      if (mounted) {
+                        // setScanning(true);
+                        // setShowOverlay(false);
+                        // setTimeout(() => {
+                        //   if (mounted) setLastScanned(null);
+                        // }, 300);
+                      }
+                    }, 3000);
+                  } else {
+                    console.log("product has multiple variants");
+                  }
                 }
               }
             }
@@ -94,24 +128,24 @@ export const ScannerPage = () => {
     };
   }, [addItem]);
 
-  const toggleFlashlight = async () => {
-    try {
-      const stream = videoRef.current?.srcObject as MediaStream;
-      if (stream) {
-        const track = stream.getVideoTracks()[0];
-        const capabilities = track.getCapabilities();
+  // const toggleFlashlight = async () => {
+  //   try {
+  //     const stream = videoRef.current?.srcObject as MediaStream;
+  //     if (stream) {
+  //       const track = stream.getVideoTracks()[0];
+  //       const capabilities = track.getCapabilities();
         
-        if (capabilities.torch) {
-          await track.applyConstraints({
-            advanced: [{ torch: !flashlightOn }],
-          });
-          setFlashlightOn(!flashlightOn);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to toggle flashlight:', err);
-    }
-  };
+  //       if (capabilities.torch) {
+  //         await track.applyConstraints({
+  //           advanced: [{ torch: !flashlightOn }],
+  //         });
+  //         setFlashlightOn(!flashlightOn);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error('Failed to toggle flashlight:', err);
+  //   }
+  // };
 
   return (
     <motion.div
@@ -191,27 +225,33 @@ export const ScannerPage = () => {
         </div>
 
         {/* Static bottom sheet */}
-        <div className="absolute bottom-0 inset-x-0 h-[35%] bg-white rounded-t-3xl p-6 z-10">
-          <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4" />
-          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-6">
-            <Search className="w-5 h-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Enter barcode number"
-              className="flex-1 bg-transparent outline-none ml-2"
-            />
-            <Mic className="w-5 h-5 text-gray-500" />
+        {!showOverlay && (
+          <div className="absolute bottom-0 inset-x-0 h-[35%] bg-white rounded-t-3xl p-6 z-10">
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4" />
+            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-6">
+              <Search className="w-5 h-5 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Enter barcode number"
+                className="flex-1 bg-transparent outline-none ml-2"
+                value={manualCode}
+                onChange={e => setManualCode(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') handleManualScan();
+                }}
+              />
+              <Mic className="w-5 h-5 text-gray-500" />
+            </div>
+            <div className="flex justify-center mb-4">
+              <img src={skipquLogo} alt="SkipQu" className="h-10" />
+            </div>
+            <p className="text-center text-gray-600 text-sm">
+              Scan and Go - Scan the Barcode from the product or enter the barcode number to add that item to your cart.
+            </p>
           </div>
-          <div className="flex justify-center mb-4">
-            <img src={skipquLogo} alt="SkipQu" className="h-10" />
-          </div>
-          <p className="text-center text-gray-600 text-sm">
-            Scan and Go - Scan the Barcode from the product or enter the barcode number to add that item to your cart.
-          </p>
-        </div>
+        )}
 
-        {/* Controls */}
-        <div className="absolute bottom-56 inset-x-0 p-6 bg-gradient-to-t from-black to-transparent">
+        {/* <div className="absolute bottom-56 inset-x-0 p-6 bg-gradient-to-t from-black to-transparent">
           <div className="flex justify-between items-center max-w-md mx-auto">
             <button
               onClick={toggleFlashlight}
@@ -222,7 +262,7 @@ export const ScannerPage = () => {
               <Flashlight className="w-6 h-6 text-white" />
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Scanned Item Overlay */}
         <AnimatePresence>
@@ -232,7 +272,7 @@ export const ScannerPage = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl overflow-hidden"
+              className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl overflow-hidden z-20"
             >
               <div className="p-6">
                 <div className="flex items-start space-x-4">
@@ -251,7 +291,7 @@ export const ScannerPage = () => {
                       transition={{ delay: 0.3 }}
                     >
                       <h3 className="text-xl font-semibold text-gray-800">{lastScanned.name}</h3>
-                      <p className="text-blue-600 text-lg font-medium">${lastScanned.price.toFixed(2)}</p>
+                      <p className="text-blue-600 text-lg font-medium">₹{lastScanned.price.toFixed(2)}</p>
                       <p className="text-gray-600 text-sm mt-1">{lastScanned.description}</p>
                       {lastScanned.weight && (
                         <p className="text-gray-500 text-sm">{lastScanned.weight}</p>
