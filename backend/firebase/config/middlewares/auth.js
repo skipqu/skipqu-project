@@ -29,4 +29,26 @@ const authorize = (...allowedRoles) => {
   };
 };
 
-module.exports = { authorize };
+/**
+ * Extract and verify Firebase token and return UID
+ * @param {string} authHeader - The Authorization header (e.g., "Bearer <token>")
+ * @returns {Promise<string>} UID if token is valid
+ * @throws {Error} If token is invalid or missing
+ */
+const getUidFromAuthHeader = async (authHeader) => {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new Error('No token provided');
+  }
+
+  const idToken = authHeader.split('Bearer ')[1];
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    return decodedToken.uid;
+  } catch (error) {
+    throw new Error('Invalid or expired token');
+  }
+};
+
+
+module.exports = { authorize, getUidFromAuthHeader};

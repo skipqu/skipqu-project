@@ -4,6 +4,7 @@ const { authorize } = require('../firebase/config/middlewares/auth');
 const { registerUser } = require('../controllers/authController');
 const userTypes = require('../constants/userTypes');
 const { addInventoryItem, fetchInventoryItem, updateInventoryItem } = require('../controllers/inventoryController');
+const { addCartItem } = require('../controllers/cartController');
 
 router.get('/', (req, res) => {
   res.json({ message: 'Welcome to the public API!' });
@@ -28,5 +29,9 @@ router.put('/update-inventory-item/:supermarketId/:pluId/:versionId', authorize(
   res.status(200).json({ message: 'Item updated successfully.' });
 });
 
+// Add cart item route
+router.post('/add-cart-item', authorize(userTypes.BUYER), addCartItem, (req, res) => {
+  res.status(201).json({ message: 'Item added successfully.' });
+});
 
 module.exports = router;
