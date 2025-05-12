@@ -4,7 +4,7 @@ const { authorize } = require('../firebase/config/middlewares/auth');
 const { registerUser } = require('../controllers/authController');
 const userTypes = require('../constants/userTypes');
 const { addInventoryItem, fetchInventoryItem, updateInventoryItem } = require('../controllers/inventoryController');
-const { addCartItem } = require('../controllers/cartController');
+const { addCartItem, updateCartItemQuantity } = require('../controllers/cartController');
 
 router.get('/', (req, res) => {
   res.json({ message: 'Welcome to the public API!' });
@@ -33,5 +33,11 @@ router.put('/update-inventory-item/:supermarketId/:pluId/:versionId', authorize(
 router.post('/add-cart-item', authorize(userTypes.BUYER), addCartItem, (req, res) => {
   res.status(201).json({ message: 'Item added successfully.' });
 });
+
+// Increment or decrement cart item quantity
+router.put('/update-cart-item-quantity', authorize(userTypes.BUYER), updateCartItemQuantity, async (req, res) => {
+  res.status(200).json({ message: 'Item quantity updated successfully.' });
+});
+
 
 module.exports = router;
