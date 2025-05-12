@@ -4,7 +4,7 @@ const { authorize } = require('../firebase/config/middlewares/auth');
 const { registerUser } = require('../controllers/authController');
 const userTypes = require('../constants/userTypes');
 const { addInventoryItem, fetchInventoryItem, updateInventoryItem } = require('../controllers/inventoryController');
-const { addCartItem, updateCartItemQuantity, deleteCartItem } = require('../controllers/cartController');
+const { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems } = require('../controllers/cartController');
 
 router.get('/', (req, res) => {
   res.json({ message: 'Welcome to the public API!' });
@@ -39,9 +39,17 @@ router.put('/update-cart-item-quantity', authorize(userTypes.BUYER), updateCartI
   res.status(200).json({ message: 'Item quantity updated successfully.' });
 });
 
-// Increment or decrement cart item quantity
+// Remove cart item route
 router.delete('/remove-cart-item', authorize(userTypes.BUYER), deleteCartItem, async (req, res) => {
   res.status(200).json({ message: 'Item deleted successfully.' });
 });
+
+// Clear Cart Items
+router.delete('/clear-cart-items', authorize(userTypes.BUYER), clearCart, async (req, res) => {
+  res.status(200).json({ message: 'Cart cleared successfully.' });
+});
+
+// Fetch Cart Items
+router.get('/fetch-cart-items', authorize(userTypes.BUYER), fetchCartItems, async (req, res) => {});
 
 module.exports = router;

@@ -1,7 +1,9 @@
 const {getUidFromAuthHeader} = require('../firebase/config/middlewares/auth');
 const {addCartItem: addCartItemService, 
     updateCartItemQuantity: updateCartItemQuantityService,
-    deleteCartItem: deleteCartItemService
+    deleteCartItem: deleteCartItemService,
+    clearCart: clearCartService,
+    fetchCartItems: fetchCartItemsService
 } = require('../services/cartService');
 
 const addCartItem = async (req, res) => {
@@ -59,4 +61,38 @@ const deleteCartItem = async (req, res) => {
   }
 };
 
-module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem };
+const clearCart = async (req, res) => {
+  try {
+    const userId = await getUidFromAuthHeader(req.headers.authorization);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const response = await clearCartService(userId);
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const fetchCartItems = async (req, res) => {
+  try {
+    const userId = await getUidFromAuthHeader(req.headers.authorization);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID and supermarket ID are required' });
+    }
+
+    const cartItems = await fetchCartItemsService(userId);
+
+    res.status(200).json(cartItems);
+  } catch (error) {
+    console.error('Error fetching cart items:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems };

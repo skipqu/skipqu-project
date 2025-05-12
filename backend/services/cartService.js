@@ -62,4 +62,59 @@ const deleteCartItem = async (userId, supermarketId, pluId, versionId) => {
     return { message: 'Item removed from cart' };
 };
 
-module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem };
+const clearCart = async (userId) => {
+  const cartRef = admin.firestore().collection('cart').doc(userId);
+  
+  const supermarketCollections = await cartRef.listCollections();
+  const batch = admin.firestore().batch();
+
+  for (const supermarketCollection of supermarketCollections) {
+    const itemDocs = await supermarketCollection.listDocuments();
+    itemDocs.forEach(doc => batch.delete(doc));
+  }
+
+  await batch.commit();
+  return { message: 'Cart cleared successfully' };
+};
+
+const fetchCartItems = async (userId) => {
+  const cartRef = admin.firestore().collection('cart').doc(userId);
+  const supermarkets = await cartRef.listCollections();
+
+  const items = [];
+
+  for (const supermarketCol of supermarkets) {
+    const supermarketId = supermarketCol.id;
+    const itemDocs = await supermarketCol.listDocuments();
+
+    for (const itemDoc of itemDocs) {
+      const itemSnap = await itemDoc.get();
+      if (!itemSnap.exists) continue;
+
+      const quantity = itemSnap.data().quantity || 0;
+      const [pluId, versionId] = itemDoc.id.split('$');
+      
+      const inventoryRef = admin.firestore()
+        .collection('inventory')
+        .doc(supermarketId)
+        .collection(pluId)
+        .doc(versionId);
+      
+      const inventorySnap = await inventoryRef.get();
+      if (!inventorySnap.exists) continue;
+
+      const itemData = inventorySnap.data();
+      items.push({
+        supermarketId,
+        pluId,
+        versionId,
+        quantity,
+        ...itemData
+      });
+    }
+  }
+
+  return items;
+};
+
+module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems };
