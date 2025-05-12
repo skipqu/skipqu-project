@@ -44,4 +44,22 @@ const updateCartItemQuantity = async (userId, supermarketId, pluId, versionId, c
     return { message: 'Cart item quantity updated', quantity: newQuantity };
 };
 
-module.exports = { addCartItem, updateCartItemQuantity };
+const deleteCartItem = async (userId, supermarketId, pluId, versionId) => {
+    const docId = `${pluId}$${versionId}`;
+    const cartRef = admin.firestore()
+      .collection('cart')
+      .doc(userId)
+      .collection(supermarketId)
+      .doc(docId);
+
+    const docSnapshot = await cartRef.get();
+
+    if (!docSnapshot.exists) {
+        return { message: 'Item not found in cart' };
+    }
+
+    await cartRef.delete();
+    return { message: 'Item removed from cart' };
+};
+
+module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem };

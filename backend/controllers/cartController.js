@@ -1,5 +1,8 @@
 const {getUidFromAuthHeader} = require('../firebase/config/middlewares/auth');
-const {addCartItem: addCartItemService, updateCartItemQuantity: updateCartItemQuantityService} = require('../services/cartService');
+const {addCartItem: addCartItemService, 
+    updateCartItemQuantity: updateCartItemQuantityService,
+    deleteCartItem: deleteCartItemService
+} = require('../services/cartService');
 
 const addCartItem = async (req, res) => {
     try {
@@ -37,4 +40,23 @@ const updateCartItemQuantity = async (req, res) => {
   }
 };
 
-module.exports = { addCartItem, updateCartItemQuantity };
+const deleteCartItem = async (req, res) => {
+  try {
+    const userId = await getUidFromAuthHeader(req.headers.authorization);
+    const { supermarketId, pluId, versionId } = req.body;
+
+    if (!userId || !supermarketId || !pluId || !versionId) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const response = await deleteCartItemService(userId, supermarketId, pluId, versionId);
+
+    res.status(200).json(response);
+
+  } catch (error) {
+    console.error('Error deleting cart item:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem };
