@@ -1,7 +1,8 @@
-const admin = require('firebase-admin');
+import pkg from 'firebase-admin';
+const { firestore } = pkg;
 
 const addInventoryItem = async (supermarketId, pluId, name, price, offer, description, netWeight, in_stock) => {
-    const inventoryRef = admin.firestore()
+    const inventoryRef = firestore()
       .collection('inventory')
       .doc(supermarketId)
       .collection(pluId);
@@ -13,15 +14,14 @@ const addInventoryItem = async (supermarketId, pluId, name, price, offer, descri
         description: description || '',
         netWeight: netWeight || '',
         in_stock: in_stock || 0,
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        createdAt: firestore.FieldValue.serverTimestamp()
     });
 
     return newVersionRef;
 };
 
 const fetchInventoryItem = async (supermarketId, pluId) => {
-    const versionsSnapshot = await admin
-      .firestore()
+    const versionsSnapshot = await firestore()
       .collection('inventory')
       .doc(supermarketId)
       .collection(pluId)
@@ -36,8 +36,7 @@ const fetchInventoryItem = async (supermarketId, pluId) => {
 };
 
 const updateInventoryItem = async (supermarketId, pluId, versionId, name, price, offer, description, netWeight, in_stock) => {
-  const docRef = admin
-    .firestore()
+  const docRef = firestore()
     .collection('inventory')
     .doc(supermarketId)
     .collection(pluId)
@@ -60,4 +59,4 @@ const updateInventoryItem = async (supermarketId, pluId, versionId, name, price,
   await docRef.update(updatedData);
 };
 
-module.exports = { addInventoryItem, fetchInventoryItem, updateInventoryItem };
+export default { addInventoryItem, fetchInventoryItem, updateInventoryItem };

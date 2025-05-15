@@ -1,10 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const { authorize } = require('../firebase/config/middlewares/auth');
-const { registerUser } = require('../controllers/authController');
-const userTypes = require('../constants/userTypes');
-const { addInventoryItem, fetchInventoryItem, updateInventoryItem } = require('../controllers/inventoryController');
-const { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems } = require('../controllers/cartController');
+import { Router } from 'express';
+const router = Router();
+import { authorize } from '../firebase/config/middlewares/auth.js';
+import { registerUser } from '../controllers/authController.js';
+// import { ADMIN, SUPERVISOR, BUYER } from '../constants/userTypes.js';
+import { addInventoryItem, fetchInventoryItem, updateInventoryItem } from '../controllers/inventoryController.js';
+import { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems } from '../controllers/cartController.js';
+import { addPurchaseRecord, updatePurchaseRecord } from '../controllers/purchaseController.js';
+import userTypes from '../constants/userTypes.js';
+
+const { ADMIN, SUPERVISOR, BUYER } = userTypes;
 
 router.get('/', (req, res) => {
   res.json({ message: 'Welcome to the public API!' });
@@ -17,39 +21,45 @@ router.get('/secure', authorize(), (req, res) => {
 });
 
 // Add inventory item route
-router.post('/add-inventory-item', authorize(userTypes.ADMIN, userTypes.SUPERVISOR), addInventoryItem, (req, res) => {
+router.post('/inventory/add-inventory-item', authorize(ADMIN, SUPERVISOR), addInventoryItem, (req, res) => {
   res.status(201).json({ message: 'Item added successfully.' });
 });
 
 // Get inventory items for given supermarketId and pluId
-router.get('/fetch-inventory-item/:supermarketId/:pluId', authorize(), fetchInventoryItem, async (req, res) => {});
+router.get('/inventory/fetch-inventory-item/:supermarketId/:pluId', authorize(), fetchInventoryItem, async (req, res) => {});
 
 // Update inventory item for given supermarketId, pluId, and versionId
-router.put('/update-inventory-item/:supermarketId/:pluId/:versionId', authorize(userTypes.ADMIN, userTypes.SUPERVISOR), updateInventoryItem, (req, res) => {
+router.put('/update-inventory-item/:supermarketId/:pluId/:versionId', authorize(ADMIN, SUPERVISOR), updateInventoryItem, (req, res) => {
   res.status(200).json({ message: 'Item updated successfully.' });
 });
 
 // Add cart item route
-router.post('/add-cart-item', authorize(userTypes.BUYER), addCartItem, (req, res) => {
+router.post('/cart/add-cart-item', authorize(BUYER), addCartItem, (req, res) => {
   res.status(201).json({ message: 'Item added successfully.' });
 });
 
 // Increment or decrement cart item quantity
-router.put('/update-cart-item-quantity', authorize(userTypes.BUYER), updateCartItemQuantity, async (req, res) => {
+router.put('/cart/update-cart-item-quantity', authorize(BUYER), updateCartItemQuantity, async (req, res) => {
   res.status(200).json({ message: 'Item quantity updated successfully.' });
 });
 
 // Remove cart item route
-router.delete('/remove-cart-item', authorize(userTypes.BUYER), deleteCartItem, async (req, res) => {
+router.delete('/cart/remove-cart-item', authorize(BUYER), deleteCartItem, async (req, res) => {
   res.status(200).json({ message: 'Item deleted successfully.' });
 });
 
 // Clear Cart Items
-router.delete('/clear-cart-items', authorize(userTypes.BUYER), clearCart, async (req, res) => {
+router.delete('/cart/clear-cart-items', authorize(), clearCart, async (req, res) => {
   res.status(200).json({ message: 'Cart cleared successfully.' });
 });
 
 // Fetch Cart Items
-router.get('/fetch-cart-items', authorize(userTypes.BUYER), fetchCartItems, async (req, res) => {});
+router.get('/cart/fetch-cart-items', authorize(BUYER), fetchCartItems, async (req, res) => {});
 
-module.exports = router;
+// Add Purchase record
+router.post('/purchase/add-purchase-record', authorize(BUYER), addPurchaseRecord, async (req, res) => {});
+
+// Update Purchase record
+router.put('/purchase/update-purchase-record/:purchaseRecordId', authorize(), updatePurchaseRecord, async (req, res) => {});
+
+export default router;

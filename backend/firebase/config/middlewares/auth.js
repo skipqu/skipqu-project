@@ -1,6 +1,6 @@
-const admin = require('../firebase');
+import admin from '../firebase.js';
 
-const authorize = (...allowedRoles) => {
+export const authorize = (...allowedRoles) => {
   return async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -35,7 +35,7 @@ const authorize = (...allowedRoles) => {
  * @returns {Promise<string>} UID if token is valid
  * @throws {Error} If token is invalid or missing
  */
-const getUidFromAuthHeader = async (authHeader) => {
+export const getUidFromAuthHeader = async (authHeader) => {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new Error('No token provided');
   }
@@ -51,4 +51,3 @@ const getUidFromAuthHeader = async (authHeader) => {
 };
 
 
-module.exports = { authorize, getUidFromAuthHeader};

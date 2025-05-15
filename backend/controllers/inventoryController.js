@@ -1,9 +1,12 @@
-const { addInventoryItem: addInventoryItemService, 
-    fetchInventoryItem: fetchInventoryItemService,
-    updateInventoryItem: updateInventoryItemService
-} = require('../services/inventoryService');
+import inventoryService from '../services/inventoryService.js';
 
-const addInventoryItem = async (req, res) => {
+const { 
+  addInventoryItem: addInventoryItemService, 
+  fetchInventoryItem: fetchInventoryItemService,
+  updateInventoryItem: updateInventoryItemService 
+} = inventoryService;
+
+export const addInventoryItem = async (req, res) => {
     try {
     const { supermarketId, pluId, name, price, offer, description, netWeight, in_stock } = req.body;
 
@@ -24,7 +27,7 @@ const addInventoryItem = async (req, res) => {
   }
 };
 
-const fetchInventoryItem = async (req, res) => {
+export const fetchInventoryItem = async (req, res) => {
   const { supermarketId, pluId } = req.params;
 
   try {
@@ -37,7 +40,7 @@ const fetchInventoryItem = async (req, res) => {
   }
 };
 
-const updateInventoryItem = async (req, res, next) => {
+export const updateInventoryItem = async (req, res, next) => {
   try {
     const { supermarketId, pluId, versionId } = req.params;
     const { name, price, offer, description, netWeight, in_stock } = req.body;
@@ -51,5 +54,3 @@ const updateInventoryItem = async (req, res, next) => {
     res.status(500).json({ error: 'Failed to update inventory item' });
   }
 };
-
-module.exports = { addInventoryItem, fetchInventoryItem, updateInventoryItem};

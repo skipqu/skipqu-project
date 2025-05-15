@@ -1,7 +1,7 @@
-const { createUserWithRole } = require('../services/authService');
-const USER_TYPES = require('../constants/userTypes');
+import USER_TYPES from '../constants/userTypes.js';
+import { createUserWithRole } from '../services/authService.js';
 
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { email, password, userType } = req.body;
 
   if (!email || !password || !userType) {
@@ -20,5 +20,3 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: 'Error creating user', error: error.message });
   }
 };
-
-module.exports = { registerUser };

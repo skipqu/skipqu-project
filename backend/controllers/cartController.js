@@ -1,12 +1,14 @@
-const {getUidFromAuthHeader} = require('../firebase/config/middlewares/auth');
+import {getUidFromAuthHeader} from '../firebase/config/middlewares/auth.js';
+import cartService from '../services/cartService.js';
+
 const {addCartItem: addCartItemService, 
     updateCartItemQuantity: updateCartItemQuantityService,
     deleteCartItem: deleteCartItemService,
     clearCart: clearCartService,
     fetchCartItems: fetchCartItemsService
-} = require('../services/cartService');
+} = cartService;
 
-const addCartItem = async (req, res) => {
+export const addCartItem = async (req, res) => {
     try {
     const userId = await getUidFromAuthHeader(req.headers.authorization);
     const { supermarketId,pluId, versionId } = req.body;
@@ -25,7 +27,7 @@ const addCartItem = async (req, res) => {
   }
 };
 
-const updateCartItemQuantity = async (req, res) => {
+export const updateCartItemQuantity = async (req, res) => {
     const userId = await getUidFromAuthHeader(req.headers.authorization);
     const { supermarketId, pluId, versionId, change } = req.body;
 
@@ -42,7 +44,7 @@ const updateCartItemQuantity = async (req, res) => {
   }
 };
 
-const deleteCartItem = async (req, res) => {
+export const deleteCartItem = async (req, res) => {
   try {
     const userId = await getUidFromAuthHeader(req.headers.authorization);
     const { supermarketId, pluId, versionId } = req.body;
@@ -61,7 +63,7 @@ const deleteCartItem = async (req, res) => {
   }
 };
 
-const clearCart = async (req, res) => {
+export const clearCart = async (req, res) => {
   try {
     const userId = await getUidFromAuthHeader(req.headers.authorization);
 
@@ -78,7 +80,7 @@ const clearCart = async (req, res) => {
   }
 };
 
-const fetchCartItems = async (req, res) => {
+export const fetchCartItems = async (req, res) => {
   try {
     const userId = await getUidFromAuthHeader(req.headers.authorization);
 
@@ -94,5 +96,3 @@ const fetchCartItems = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
-
-module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems };

@@ -1,8 +1,8 @@
-const express = require('express');
+import express, { json } from 'express';
 const app = express();
-const apiRoutes = require('./routes/api');
+import apiRoutes from './routes/api.js';
 
-app.use(express.json());
+app.use(json());
 
 // Routes
 app.use('/api', apiRoutes);

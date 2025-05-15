@@ -1,8 +1,9 @@
-const admin = require('firebase-admin');
+import pkg from 'firebase-admin';
+const { firestore } = pkg;
 
 const addCartItem = async (userId, supermarketId, pluId, versionId) => {
     const docId = `${pluId}$${versionId}`;
-    const cartRef = admin.firestore()
+    const cartRef = firestore()
       .collection('cart')
       .doc(userId)
       .collection(supermarketId)
@@ -20,7 +21,7 @@ const addCartItem = async (userId, supermarketId, pluId, versionId) => {
 
 const updateCartItemQuantity = async (userId, supermarketId, pluId, versionId, change) => {
     const docId = `${pluId}$${versionId}`;
-    const cartRef = admin.firestore()
+    const cartRef = firestore()
       .collection('cart')
       .doc(userId)
       .collection(supermarketId)
@@ -46,7 +47,7 @@ const updateCartItemQuantity = async (userId, supermarketId, pluId, versionId, c
 
 const deleteCartItem = async (userId, supermarketId, pluId, versionId) => {
     const docId = `${pluId}$${versionId}`;
-    const cartRef = admin.firestore()
+    const cartRef = firestore()
       .collection('cart')
       .doc(userId)
       .collection(supermarketId)
@@ -63,10 +64,10 @@ const deleteCartItem = async (userId, supermarketId, pluId, versionId) => {
 };
 
 const clearCart = async (userId) => {
-  const cartRef = admin.firestore().collection('cart').doc(userId);
+  const cartRef = firestore().collection('cart').doc(userId);
   
   const supermarketCollections = await cartRef.listCollections();
-  const batch = admin.firestore().batch();
+  const batch = firestore().batch();
 
   for (const supermarketCollection of supermarketCollections) {
     const itemDocs = await supermarketCollection.listDocuments();
@@ -78,7 +79,7 @@ const clearCart = async (userId) => {
 };
 
 const fetchCartItems = async (userId) => {
-  const cartRef = admin.firestore().collection('cart').doc(userId);
+  const cartRef = firestore().collection('cart').doc(userId);
   const supermarkets = await cartRef.listCollections();
 
   const items = [];
@@ -94,7 +95,7 @@ const fetchCartItems = async (userId) => {
       const quantity = itemSnap.data().quantity || 0;
       const [pluId, versionId] = itemDoc.id.split('$');
       
-      const inventoryRef = admin.firestore()
+      const inventoryRef = firestore()
         .collection('inventory')
         .doc(supermarketId)
         .collection(pluId)
@@ -117,4 +118,4 @@ const fetchCartItems = async (userId) => {
   return items;
 };
 
-module.exports = { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems };
+export default { addCartItem, updateCartItemQuantity, deleteCartItem, clearCart, fetchCartItems };

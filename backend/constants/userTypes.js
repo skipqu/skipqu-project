@@ -5,4 +5,4 @@ const USER_TYPES = Object.freeze({
     SECURITY: 'SECURITY',
   });
   
-  module.exports = USER_TYPES;
+export default USER_TYPES;

@@ -1,8 +1,10 @@
-const admin = require('firebase-admin');
+// import { auth } from 'firebase-admin';
+import pkg from 'firebase-admin';
+const {auth} = pkg;
 
-const createUserWithRole = async (email, password, userType) => {
-  const userRecord = await admin.auth().createUser({ email, password });
-  await admin.auth().setCustomUserClaims(userRecord.uid, { userType });
+export const createUserWithRole = async (email, password, userType) => {
+  const userRecord = await auth().createUser({ email, password });
+  await auth().setCustomUserClaims(userRecord.uid, { userType });
 
   return {
     message: 'User registered successfully',
@@ -11,5 +13,3 @@ const createUserWithRole = async (email, password, userType) => {
     userType,
   };
 };
-
-module.exports = { createUserWithRole };
