@@ -33,21 +33,6 @@ export const addPurchaseSchema = Joi.object({
   ).min(1).required()
 });
 
-// export const updatePurchaseSchema = Joi.object({
-//   purchase_record_id: Joi.string().required(),
-//   anti_fraud_detection_technology: Joi.object({
-//     verification_status: Joi.string(),
-//     flagged_shopping: Joi.boolean()
-//   }).unknown(false),
-
-//   transaction_details: Joi.object({
-//     payment_status: Joi.string(),
-//   }).unknown(false),
-  
-// }).or('verification_status', 'flagged_shopping', 'payment_status', 'purchase_record_id').unknown(false);
-
-
-
 export const updatePurchaseSchema = Joi.object({
   anti_fraud_detection_technology: Joi.object({
     verification_status: Joi.string(),
